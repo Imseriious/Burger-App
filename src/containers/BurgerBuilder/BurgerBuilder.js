@@ -42,9 +42,9 @@ class BurgerBuilder extends Component {
 
     }
 
-    removeIngredientHandler = (type) => {
+    removeIngredientHandler = (type) => { //Same logic as above but with extraction
         const oldCount = this.state.ingredients[type];
-        if (oldCount <= 0) {
+        if (oldCount <= 0) { //If the oldCount is less or equal 0 we just return nothing so we dont get an error
             return;
         }
         const updatedCount = oldCount -1;
@@ -59,11 +59,18 @@ class BurgerBuilder extends Component {
     }
 
     render() {
+        const disableInfo = {
+            ...this.state.ingredients
+        };
+        for (let key in disableInfo) {
+            disableInfo[key] = disableInfo[key] <= 0;
+        }
         return(
             <Aux>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls 
-                    ingredientAdded={this.addIngredientHandler} ingredientRemoved={this.removeIngredientHandler} />
+                    ingredientAdded={this.addIngredientHandler} ingredientRemoved={this.removeIngredientHandler} 
+                    disable = {disableInfo}/>
             </Aux>
         );
     }
