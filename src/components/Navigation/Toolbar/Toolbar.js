@@ -4,10 +4,10 @@ import classes from './Toolbar.module.css';
 import Logo from '../../Logo/Logo';
 import NavigationItems from '../NavigationItems/NavigationItems';
 
-const toolbar = (props) => (
+const toolbar = (props) => ( //Second way of controlling height of logo with props
     <header className={classes.Toolbar}>
         <div>MENU</div>
-        <Logo />
+        <Logo height={"80%"}/>
         <NavigationItems />
     </header>
 );
