@@ -8,11 +8,49 @@ import Input from '../../../components/UI/Input/Input';
 
 class ContactData extends Component {
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            postalCode: ''
+        orderForm: {
+            name: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your Name'
+                },
+                value: ''
+            },
+            street: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Street'
+                },
+                value: ''
+            },
+            zipCode: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'ZIP Code'
+                },
+                value: ''
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Your E-mail'
+                },
+                value: ''
+            },
+            deilveryMethod: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        { value: 'fastes', diplayValue: 'Fastes' },
+                        { value: 'cheapest', diplayValue: 'Cheapest' }
+                    ]
+                },
+                value: ''
+            }
         },
         loading: false,
 
@@ -24,15 +62,7 @@ class ContactData extends Component {
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price,
-            customer: {
-                name: 'Sam',
-                adress: {
-                    street: 'TestStreet',
-                    zipCode: 'Spain'
-                },
-                email: 'hehe@jeje.com',
-            },
-            deilveryMethod: 'FAST'
+
         }
 
         axios.post('/orders.json', order) //Second argument is the data we want to post & .json required for firebase!
@@ -46,12 +76,23 @@ class ContactData extends Component {
     }
 
     render() {
+        const formElementsArray = [];
+        for (let key in this.state.orderForm) {
+            formElementsArray.push({
+                id: key,
+                config: this.state.orderForm[key]
+            });
+        }
+
         let form = (
             <form>
-                <Input  inputtype={"input"} type="text" name="name" placeholder="Your Name" />
-                <Input inputtype={"input"} type="text" name="email" placeholder="Your E-Mail" />
-                <Input inputtype={"input"} type="text" name="street" placeholder="Street" />
-                <Input inputtype={"input"} type="text" name="postal" placeholder="Postal Code" />
+                {formElementsArray.map(formElement => (
+                    <Input
+                        key={formElement.id}
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.value} />
+                ))}
                 <Button btnType="Succes" clicked={this.orderHandler}>ORDER</Button>
             </form>
         );
