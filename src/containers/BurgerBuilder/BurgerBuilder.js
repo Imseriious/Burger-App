@@ -14,7 +14,6 @@ import * as actionTypes from '../../store/actions';
 class BurgerBuilder extends Component {
     
     state = {
-        purchasable: false, //Default value to use in the button later
         purchasing: false,
         loading: false,
         error: false
@@ -38,7 +37,7 @@ class BurgerBuilder extends Component {
             .reduce((sum, el) => { //Sum is the variable that increases with every loop, el is the current element we get from above
                 return sum + el;
             }, 0); //We start sum with 0
-        this.setState({ purchasable: sum > 0 }) //If sum is more than 0 purchasable = true
+        return sum > 0  //If sum is more than 0 return true
     }
 
     purchaseHandler = () => { //We need to use this syntax if we trigger the method by click
@@ -84,7 +83,7 @@ class BurgerBuilder extends Component {
                         ingredientRemoved={this.props.onIngredientRemoved}
                         disable={disableInfo}
                         price={this.props.price}
-                        purchasable={this.state.purchasable}
+                        purchasable={this.updatePurchaseState(this.props.ings)}
                         purchasing={this.purchaseHandler} />
                 </Aux>
             );
