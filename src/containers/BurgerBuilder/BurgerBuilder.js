@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
+import axios from '../../axios-orders';
 import Aux from '../../hoc/Auxiliary/Auxiliary';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -8,30 +8,21 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Loading/Loading';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import axios from '../../axios-orders';
 import * as burgerBuilderActions from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
     
     state = {
-        purchasing: false,
-        loading: false,
-        error: false
+        purchasing: false
     }
 
-    // componentDidMount() {
-    //     axios.get('https://react-my-burger-7b541.firebaseio.com/ingredients.json')
-    //         .then(response => {
-    //             this.setState({ ingredients: response.data });
-    //         })
-    //         .catch(error => {
-    //             this.setState({ error: true });
-    //         });
-    // }
+    componentDidMount () {
+        this.props.onInirIngredients()
+    }
 
-    updatePurchaseState(ingredients) { //ingredient state coming from handlers. 
+    updatePurchaseState(ingredients) {
         const sum = Object.keys(ingredients) //We go trought ingredients and transform in array
-            .map(igKey => { //Map trougth them 
+            .map(igKey => { 
                 return ingredients[igKey] //We acces the value in that ingredient and return it
             })
             .reduce((sum, el) => { //Sum is the variable that increases with every loop, el is the current element we get from above
@@ -72,7 +63,7 @@ class BurgerBuilder extends Component {
 
         
 
-        let burger = this.state.error ? <p>Ingredients can't be loaded</p> : <Spinner />;
+        let burger = this.props.error ? <p>Ingredients can't be loaded</p> : <Spinner />;
 
         if (this.props.ings) {
             burger = (
@@ -92,9 +83,6 @@ class BurgerBuilder extends Component {
                 purchasedContinued={this.purchaseContinueHandler}
                 price={this.props.price} />
         }
-        if (this.state.loading) {
-            orderSummary = <Spinner />
-        }
 
         return (
             <Aux>
@@ -110,14 +98,16 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
     return{
         ings: state.ingredients,
-        price: state.totalPrice
+        price: state.totalPrice,
+        error: state.error
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
         onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
-        onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName))
+        onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
+        onInirIngredients: () => dispatch(burgerBuilderActions.initIngredients())
     }
 }
 
